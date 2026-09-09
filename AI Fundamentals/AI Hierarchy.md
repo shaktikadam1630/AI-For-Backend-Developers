@@ -12,63 +12,220 @@ We start at the foundation: what does "AI" actually mean, and how do Machine Lea
 
 ---
 
-## The AI Hierarchy
+# 1. Artificial Intelligence (AI)
 
-"AI," "Machine Learning," and "LLM" are not the same thing. They are five layers, nested one inside the other — like boxes inside boxes.
+Artificial Intelligence (AI) is the broad field of building machines that can perform tasks which normally require human intelligence.
 
-```mermaid
-flowchart TD
-    A[Artificial Intelligence<br/>The broad field] --> B[Machine Learning<br/>Systems that learn from data]
-    B --> C[Deep Learning<br/>Learning via layered neural networks]
-    C --> D[Generative AI<br/>Models that generate new content]
-    D --> E[Large Language Models - LLMs<br/>Generate and understand language]
-```
+The important thing to understand is:
 
-**The rule:** every layer sits inside the layer above it.
-- Every LLM is Generative AI
-- Every Generative AI model is Deep Learning
-- Every Deep Learning model is Machine Learning
-- Every Machine Learning system is AI
+> AI does NOT automatically mean Machine Learning, Neural Networks, or ChatGPT.
 
-It never works the other way around.
+A system can be considered AI even if it follows fixed rules written by a programmer. If a machine can make decisions, solve problems, or behave in a way that appears intelligent, it falls under the umbrella of AI.
 
 ---
 
-### 1. Artificial Intelligence (AI)
+## Think Like a Software Developer
 
-AI is the biggest box. It means: **a machine behaving in a way that looks intelligent.**
+Imagine you are building a banking system. A customer applies for a loan. A human employee checks:
 
-It doesn't need to "learn" anything. A 1990s chess program running fixed rules (`if the opponent moves here, respond like this`) still counts as AI — no data, no learning, just smart-looking rules written by a person.
+- Salary
+- Credit Score
+- Existing Loans
+- Age
+
+Then decides: **Approve Loan** or **Reject Loan**.
+
+Instead of a human doing this, we can write rules inside software.
 
 ```mermaid
 flowchart LR
-    A[Artificial Intelligence] --> B[Rule-Based Systems<br/>hardcoded logic, no learning]
-    A --> C[Machine Learning Systems<br/>learns patterns from data]
+    A[Customer Data] --> B[Rule Engine]
+    B --> C[Approve Loan]
+    B --> D[Reject Loan]
 ```
 
-The term "AI" goes back to 1956 — decades before anything like ChatGPT existed.
-
-```javascript
-// This is genuine AI — no learning, no data, just rules. It still "behaves" intelligently.
-function chessMove(opponentMove) {
-  if (opponentMove === "e4") return "e5";
-  if (opponentMove === "d4") return "d5";
-  return "knightToF3"; // a fixed, hardcoded response for every case
-}
-```
-
-**What this code is showing, point by point:**
-
-- **The goal of the example:** prove that "AI" doesn't require learning or data at all — just behavior that *looks* intelligent from the outside.
-- **`function chessMove(opponentMove) {`** — a plain function that takes one input: whatever move the opponent just played (for example, `"e4"`).
-- **`if (opponentMove === "e4") return "e5";`** — if the opponent plays the pawn move `e4`, always respond with `e5`. This isn't a decision the program "thinks through" — it's a fixed rule a person typed in ahead of time, based on known chess opening theory.
-- **`if (opponentMove === "d4") return "d5";`** — the same idea again: another fixed opening response. Play `d4`, always get `d5` back.
-- **`return "knightToF3";`** — the fallback. If the opponent's move doesn't match any rule the programmer thought of, fall back to a generic, safe move. Still entirely hardcoded — nothing here was learned.
-- **Why this still counts as AI:** someone watching this play chess would say it looks intelligent. But there's no data behind it, no training, no pattern recognition — just `if/else` logic written in advance by a human.
-- **The line this example is drawing:** AI is about the *appearance* of intelligent behavior, not about learning. The moment this hardcoded logic gets replaced with something that *learns* the best response from thousands of real games instead of being told the rules directly, it crosses from plain AI into Machine Learning — the next topic.
+The machine is making decisions. This is Artificial Intelligence.
 
 ---
 
+## AI Before Machine Learning
+
+Before Machine Learning became popular, most AI systems were rule-based systems. The developer manually wrote every rule.
+
+```mermaid
+flowchart LR
+    A[Artificial Intelligence] --> B[Rule-Based Systems]
+    A --> C[Machine Learning]
+```
+
+Examples: Chess Programs, Expert Systems, Medical Diagnosis Systems, Loan Approval Systems.
+
+None of these systems learned anything. They simply followed rules.
+
+---
+
+## Example: Rule-Based Loan Approval
+
+```javascript
+function approveLoan(salary, creditScore, hasExistingLoan) {
+
+    if (
+        salary > 50000 &&
+        creditScore > 700 &&
+        !hasExistingLoan
+    ) {
+        return "Approved";
+    }
+
+    return "Rejected";
+}
+```
+
+### Code Explained, Point by Point
+
+- **`function approveLoan(salary, creditScore, hasExistingLoan) {`** — takes three pieces of information about a customer: income, credit score, and whether they already have another loan.
+- **`salary > 50000`** — Rule 1. The customer must earn more than ₹50,000. This number was chosen by a person, not calculated from data.
+- **`creditScore > 700`** — Rule 2. The customer must have a credit score above 700 — again, a threshold picked by a human, not discovered from past cases.
+- **`!hasExistingLoan`** — Rule 3. The `!` means "not." This checks the customer does *not* already have an active loan.
+- **`&&`** joins all three conditions — every single one must be true for the loan to be approved.
+- **`return "Approved";`** — if all three rules pass, this fixed outcome is returned.
+- **`return "Rejected";`** — the fallback if even one rule fails. No in-between, no judgment call — just a binary outcome the programmer defined in advance.
+
+**Example call:**
+
+```javascript
+approveLoan(60000, 750, false);
+// salary: 60000 > 50000 → true
+// creditScore: 750 > 700 → true
+// hasExistingLoan: false, so !false → true
+// All three true → returns "Approved"
+```
+
+---
+
+## Why This Is AI
+
+The system is making decisions that normally require a human employee. A person watching the software would say:
+
+> "The computer is intelligently deciding who gets a loan."
+
+But notice:
+- No learning
+- No training
+- No data analysis
+- No pattern recognition
+
+Everything comes from rules written by the programmer.
+
+---
+
+## Limitations of Rule-Based AI
+
+Imagine handling spam emails. You write:
+
+```javascript
+if (email.includes("Win Money")) {
+    return "Spam";
+}
+```
+
+Spammers change their message:
+
+```text
+Congratulations!
+You Won A Reward
+```
+
+Now your rule fails. You add another rule:
+
+```javascript
+if (email.includes("Reward")) {
+    return "Spam";
+}
+```
+
+Then they change it again. You keep writing more and more rules:
+
+```text
+Rule 1
+Rule 2
+Rule 3
+Rule 50
+Rule 500
+Rule 5000
+```
+
+This quickly becomes impossible to maintain.
+
+---
+
+## The Problem AI Researchers Faced
+
+Rule-based systems work well when:
+- The rules are simple
+- The problem is predictable
+
+They fail when:
+- Patterns constantly change
+- Data becomes huge
+- Rules become too complex
+
+Researchers started asking:
+
+> Instead of writing rules ourselves, can a machine learn the rules automatically from data?
+
+That question led to the birth of **Machine Learning** — the next major branch inside AI.
+
+---
+
+## AI Hierarchy
+
+```mermaid
+flowchart TD
+    A[Artificial Intelligence]
+    A --> B[Rule-Based Systems]
+    A --> C[Machine Learning]
+    C --> D[Deep Learning]
+    D --> E[NLP]
+    E --> F[Transformers]
+    F --> G[Large Language Models]
+    G --> H[RAG]
+    H --> I[AI Agents]
+```
+
+---
+
+## Key Takeaways
+
+- AI is the broad field of making machines behave intelligently.
+- AI does not necessarily require learning.
+- Rule-based systems are valid AI systems.
+- Traditional AI relies on human-written rules.
+- Rule-based systems become difficult to scale.
+- Machine Learning was created to allow machines to learn rules from data instead of manually programming them.
+- Machine Learning is a subset of Artificial Intelligence.
+
+---
+
+## Next Topic
+
+```text
+Artificial Intelligence
+        ↓
+Machine Learning
+        ↓
+Deep Learning
+        ↓
+Transformers
+        ↓
+LLMs
+```
+
+Now that we understand what AI is, the next question becomes:
+
+> How can a machine learn patterns without us manually writing every rule?
+
+The answer is **Machine Learning**.
 ### 2. Machine Learning (ML)
 
 This is where real "learning" begins. Instead of a person writing the rules, the system looks at data and works out the pattern itself.
