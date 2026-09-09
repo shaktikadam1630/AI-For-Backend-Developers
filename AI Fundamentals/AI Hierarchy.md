@@ -71,4 +71,120 @@ flowchart LR
 
 | Type | In plain words | Example |
 |---|---|---|
-| Supervised Learning | Learns from examples that already have the correct answer attached | An email already marked "spam"
+| Supervised Learning | Learns from examples that already have the correct answer attached | An email already marked "spam" or "not spam" |
+| Unsupervised Learning | Finds patterns in data with no answers given at all | Grouping customers by similar buying habits |
+| Reinforcement Learning | Learns by trying things and getting rewarded or punished | A system earning points for good moves in a game |
+
+```javascript
+// Old way — a person writes every rule by hand
+function approveLoanOldWay(income, age) {
+  if (income > 50000 && age > 21) return "approved";
+  return "rejected";
+}
+
+// Machine Learning way — the system learned this decision from past data
+// (you don't write the rule; a trained model produces the decision)
+const decision = await loanModel.predict({ income: 62000, age: 27 });
+console.log(decision); // e.g. "approved" — based on patterns learned from 10,000 past cases
+```
+
+---
+
+### 3. Deep Learning (DL)
+
+Regular Machine Learning struggles with complex data — photos, audio, long text. Deep Learning was built to handle exactly that, using a **neural network**: many small units stacked in layers, each layer building on what the layer before it noticed.
+
+```mermaid
+flowchart LR
+    A[Input Data] --> B[Layer 1<br/>notices simple patterns]
+    B --> C[Layer 2<br/>combines those patterns]
+    C --> D[Layer 3<br/>understands complex patterns]
+    D --> E[Output<br/>final answer]
+```
+
+"Deep" simply means many layers stacked together.
+
+Two neural network types worth knowing:
+- **CNN (Convolutional Neural Network)** — built for images, scans small parts of a picture and builds up the full understanding.
+- **RNN (Recurrent Neural Network)** — built for text, reads word by word trying to remember what came before, but often forgets the start of a long sentence by the time it reaches the end. This weakness led to the Transformer, the design behind every modern LLM.
+
+```javascript
+// You don't build a neural network yourself — you call a model that already has one
+// Example: an image classifier built on a CNN, accessed via an API
+const result = await visionModel.classify({ imageUrl: "https://example.com/photo.jpg" });
+console.log(result); // { label: "cat", confidence: 0.97 }
+```
+
+---
+
+### 4. Generative AI
+
+Not every Deep Learning model creates something new — some just label things that already exist.
+
+```mermaid
+flowchart LR
+    A[Deep Learning Model] --> B["Labeling task:<br/>'Is this email spam?' → Yes/No"]
+    A --> C["Generating task:<br/>'Write a reply' → New text"]
+```
+
+A spam filter picks a label. A tool that writes a full reply email creates something brand new. That's Generative AI — the layer where the model *makes* something instead of just sorting it.
+
+```javascript
+// Classification (Deep Learning, NOT Generative AI) — outputs a label
+const spamCheck = await spamModel.classify({ email: emailText });
+console.log(spamCheck); // { label: "not_spam" }
+
+// Generation (Generative AI) — outputs brand new text
+const reply = await anthropic.messages.create({
+  model: "claude-sonnet-4-5",
+  max_tokens: 150,
+  messages: [{ role: "user", content: "Write a polite reply declining this meeting request." }],
+});
+console.log(reply.content[0].text); // newly generated text, not a label
+```
+
+---
+
+### 5. Large Language Models (LLMs)
+
+LLMs are Generative AI's language specialist — trained on huge amounts of text, built to understand and produce human language.
+
+```mermaid
+flowchart TD
+    A[Generative AI] --> B["Text<br/>→ LLMs like GPT, Claude, Gemini"]
+    A --> C["Images<br/>→ Image generation models"]
+    A --> D["Audio<br/>→ Voice and music models"]
+```
+
+This is the layer you'll actually work with most going forward.
+
+```javascript
+import Anthropic from "@anthropic-ai/sdk";
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const response = await anthropic.messages.create({
+  model: "claude-sonnet-4-5",
+  max_tokens: 100,
+  messages: [{ role: "user", content: "What is an LLM, in one sentence?" }],
+});
+
+console.log(response.content[0].text);
+```
+
+---
+
+## Putting It All Together
+
+| Real Example | Where It Sits |
+|---|---|
+| A 1990s chess program with fixed rules | AI only |
+| A spam filter trained on labeled emails | AI → ML |
+| Face recognition on your phone | AI → ML → Deep Learning |
+| A tool that writes marketing text | AI → ML → Deep Learning → Generative AI → LLM |
+| ChatGPT, Claude, Gemini | AI → ML → Deep Learning → Generative AI → LLM |
+
+**One line to remember:** every LLM is Generative AI, every Generative AI model is Deep Learning, every Deep Learning model is Machine Learning, every Machine Learning system is AI — and it never runs backward.
+
+---
+
+**Coming next:** Types of Machine Learning, in more depth.
