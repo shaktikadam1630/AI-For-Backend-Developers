@@ -207,25 +207,6 @@ flowchart TD
 
 ---
 
-## Next Topic
-
-```text
-Artificial Intelligence
-        ↓
-Machine Learning
-        ↓
-Deep Learning
-        ↓
-Transformers
-        ↓
-LLMs
-```
-
-Now that we understand what AI is, the next question becomes:
-
-> How can a machine learn patterns without us manually writing every rule?
-
-The answer is **Machine Learning**.
 ### 2. Machine Learning (ML)
 
 This is where real "learning" begins. Instead of a person writing the rules, the system looks at data and works out the pattern itself.
