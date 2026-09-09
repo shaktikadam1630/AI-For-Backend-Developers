@@ -57,6 +57,16 @@ function chessMove(opponentMove) {
 }
 ```
 
+**What this code is showing, point by point:**
+
+- **The goal of the example:** prove that "AI" doesn't require learning or data at all — just behavior that *looks* intelligent from the outside.
+- **`function chessMove(opponentMove) {`** — a plain function that takes one input: whatever move the opponent just played (for example, `"e4"`).
+- **`if (opponentMove === "e4") return "e5";`** — if the opponent plays the pawn move `e4`, always respond with `e5`. This isn't a decision the program "thinks through" — it's a fixed rule a person typed in ahead of time, based on known chess opening theory.
+- **`if (opponentMove === "d4") return "d5";`** — the same idea again: another fixed opening response. Play `d4`, always get `d5` back.
+- **`return "knightToF3";`** — the fallback. If the opponent's move doesn't match any rule the programmer thought of, fall back to a generic, safe move. Still entirely hardcoded — nothing here was learned.
+- **Why this still counts as AI:** someone watching this play chess would say it looks intelligent. But there's no data behind it, no training, no pattern recognition — just `if/else` logic written in advance by a human.
+- **The line this example is drawing:** AI is about the *appearance* of intelligent behavior, not about learning. The moment this hardcoded logic gets replaced with something that *learns* the best response from thousands of real games instead of being told the rules directly, it crosses from plain AI into Machine Learning — the next topic.
+
 ---
 
 ### 2. Machine Learning (ML)
