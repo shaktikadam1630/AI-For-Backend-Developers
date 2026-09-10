@@ -24,7 +24,7 @@ Start here: what AI, Machine Learning, Deep Learning, Generative AI, and LLMs ea
 
 ## 1. Artificial Intelligence — The Foundation
 
-**Definition:** AI is the overarching field in computer science where computers are trained to perform tasks that humans are generally good at — recognizing patterns, visual understanding, voice or text understanding, and similar tasks.
+**Definition:** Artificial Intelligence (AI) is a branch of computer science focused on building systems that can perform tasks that normally require human intelligence, such as learning from data, recognizing patterns, understanding language, making decisions, and solving problems.
 
 **The point most people miss:** Machine Learning is an important subdomain of AI — but it is not the whole of AI. You can build a system that behaves intelligently, even at a human-comparable level for a specific task, using techniques that have nothing to do with learning from data at all.
 
