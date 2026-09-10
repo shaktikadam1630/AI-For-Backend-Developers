@@ -82,7 +82,7 @@ Historically, most AI systems that existed before Machine Learning became practi
 
 ## 2. Machine Learning — The Core Shift
 
-**Definition:** ML is the process of teaching computers to learn patterns from data and make decisions based on those patterns.
+**Definition:** Machine Learning (ML) is a subset of Artificial Intelligence (AI) that enables computers to automatically learn patterns, relationships, and insights from data, and use that knowledge to make predictions, classifications, or decisions without being explicitly programmed with fixed rules for every situation.
 
 ### 2.1 The Fundamental Difference from Traditional Programming
 
