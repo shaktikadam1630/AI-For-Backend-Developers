@@ -27,9 +27,9 @@ For an LLM specifically, the Transformer's job in its simplest form is: **given 
 
 ```mermaid
 flowchart LR
-    A["Input: 'Hi, I am Piy'"] --> B[Transformer]
-    B --> C["Predicts next token: 'u'"]
-    C --> D["Append: 'Hi, I am Piyu'"] --> B
+    A["Input: 'Hi, I am Shakti'"] --> B[Transformer]
+    B --> C["Predicts next token: 'Prasad'"]
+    C --> D["Append: 'Hi, I am Shaktiprasad'"] --> B
 ```
 
 This predict-then-append cycle repeats — this is genuinely just a very well-tuned autocomplete, run over and over until the model produces a special "end of sequence" signal telling it to stop.
