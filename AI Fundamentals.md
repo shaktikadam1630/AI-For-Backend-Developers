@@ -15,7 +15,6 @@ These notes are written for that exact starting point: solid fundamentals, zero 
 3. [Deep Learning — When Data Gets Too Complex for Statistical ML](#3-deep-learning--when-data-gets-too-complex-for-statistical-ml)
 4. [Generative AI](#4-generative-ai)
 5. [Large Language Models (LLMs)](#5-large-language-models-llms)
-6. [Workflows, AI Agents, and Agentic AI](#6-workflows-ai-agents-and-agentic-ai)
 7. [Full Picture — Where Everything Sits](#7-full-picture--where-everything-sits)
 
 Start here: what AI, Machine Learning, Deep Learning, Generative AI, and LLMs each mean, and how they fit inside one another.
@@ -409,7 +408,7 @@ console.log(response.content[0].text);
 
 ---
 
-## 6. # Generative AI vs. AI Agents vs. Agentic AI
+## 6. Generative AI vs. AI Agents vs. Agentic AI
 
 These three terms get used interchangeably in job postings, product marketing, and tutorials — but they describe three genuinely different things, sitting at increasing levels of complexity and autonomy. Getting this distinction right matters because it directly affects how you architect a system: a chatbot that answers questions needs a completely different design than a system that autonomously completes multi-step tasks.
 
