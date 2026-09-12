@@ -256,18 +256,88 @@ Guidelines, not hard rules — testing both approaches is normal.
 flowchart TD
     A[Neural Network Architectures] --> B["FNN<br/>Feed-Forward"]
     A --> C["RNN<br/>Recurrent"]
-    A --> D["Transformer"]
+    A --> D["CNN<br/>Convolutional"]
+    A --> E["Transformer"]
 ```
 
-- **FNN:** data flows one direction only — like a juicer, fruit in, juice out.
-- **RNN:** processes sequences over time, feeding its own previous output back in — like adjusting a soup recipe as you taste it.
-- **Transformer:** the architecture behind essentially all modern Generative AI and Agentic AI. GPT stands for **Generative Pre-trained Transformer**.
+**FNN (Feed-Forward Neural Network)**
+
+The simplest architecture — data flows in one direction only, from input to hidden layers to output, with no loops and no memory of previous inputs. Like a juicer: fruit goes in one end, juice comes out the other, and the juicer has no idea what fruit went through it a moment ago.
+
+```mermaid
+flowchart LR
+    A[Input Layer] --> B[Hidden Layer]
+    B --> C[Output Layer]
+```
+
+Best suited for straightforward, structured problems where each input is independent of the ones before it — no sequence or spatial structure to preserve.
+
+**RNN (Recurrent Neural Network)**
+
+Designed for sequences — text, time-series data, anything where order matters. It processes one element at a time, feeding its own previous output back in as additional context for the next step. Like adjusting a soup recipe as you go: taste it, add something, taste again, adjust again — each step depends on what happened in the step before.
+
+```mermaid
+flowchart LR
+    A[Input at time 1] --> B[RNN Cell]
+    B --> C[Output 1]
+    B -->|feedback loop| B2[RNN Cell]
+    D[Input at time 2] --> B2
+    B2 --> C2[Output 2]
+    B2 -->|feedback loop| B3[RNN Cell]
+    E[Input at time 3] --> B3
+    B3 --> C3[Output 3]
+```
+
+The weakness: RNNs process one token at a time, in sequence — slow, and prone to "forgetting" context from early in a long sequence by the time they reach the end. This exact limitation is what motivated the Transformer architecture later.
+
+**CNN (Convolutional Neural Network)**
+
+Designed specifically for images and other grid-like data (like spectrograms of audio). Instead of looking at an entire image at once, a CNN slides a small filter (a "kernel") across small patches of the image, detecting simple local features first — edges, corners, color gradients.
+
+```mermaid
+flowchart LR
+    A[Input Image] --> B[Convolution Layer<br/>detects edges, corners]
+    B --> C[Pooling Layer<br/>shrinks + keeps key features]
+    C --> D[Convolution Layer<br/>detects shapes, textures]
+    D --> E[Pooling Layer]
+    E --> F[Fully Connected Layer]
+    F --> G[Output: e.g. 'cat', 0.94 confidence]
+```
+
+- **Convolution layers** scan the image with small filters, each one learning to detect a specific simple pattern (a vertical edge, a curve, a patch of color).
+- **Pooling layers** shrink the data down between convolution steps, keeping the strongest signals and discarding redundant detail — this also makes the network tolerant of an object appearing in a slightly different position or scale in the image.
+- Early layers detect simple features (edges); deeper layers combine those into more complex ones (an eye, an ear); the final layers combine everything into a full classification (a face, a cat, a stop sign).
+
+This layered "simple-features-first, complex-features-later" structure is exactly why CNNs became the standard architecture for image classification, object detection, and facial recognition — it mirrors how a Deep Learning network in general builds understanding in layers, but with a structure specifically tuned to exploit the 2D spatial patterns in images rather than the sequential patterns in text.
+
+**Transformer**
+
+The architecture behind essentially all modern Generative AI and Agentic AI. Unlike an RNN, it doesn't process tokens one at a time — it looks at an entire sequence at once and uses **self-attention** to figure out which words are most relevant to which other words, regardless of their distance apart in the sequence.
+
+```mermaid
+flowchart LR
+    A[Entire Input Sequence] --> B[Self-Attention:<br/>every token compared to every other token]
+    B --> C[Context-aware embeddings]
+    C --> D[Feed-Forward Layer]
+    D --> E[Output]
+```
+
+GPT stands for **Generative Pre-trained Transformer** — this architecture is the direct reason modern LLMs can maintain context across long passages far better than RNNs ever could, and process input in parallel rather than one token at a time, making both training and inference dramatically faster at scale.
+
+**Quick comparison:**
+
+| Architecture | Best suited for | Processes input |
+|---|---|---|
+| FNN | Simple, structured, independent inputs | All at once, no memory |
+| RNN | Sequences (text, time-series) | One step at a time, with memory of previous steps |
+| CNN | Images, grid-like/spatial data | In small local patches, layer by layer |
+| Transformer | Sequences (text, and increasingly images/audio too) | Entire sequence at once, via attention |
+
+---
 
 ### 3.5 Deep Learning Tooling
 
 PyTorch (Meta, more popular/beginner-friendly) and TensorFlow (Google, more fine-grained control). GPUs are essentially required for training at scale — local or rented in the cloud.
-
----
 
 ## 4. Generative AI
 
