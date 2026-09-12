@@ -324,6 +324,8 @@ flowchart LR
 
 GPT stands for **Generative Pre-trained Transformer** — this architecture is the direct reason modern LLMs can maintain context across long passages far better than RNNs ever could, and process input in parallel rather than one token at a time, making both training and inference dramatically faster at scale.
 
+> 📖 **For more information:** see [Transformer.md](https://github.com/shaktikadam1630/AI-For-Backend-Developers/blob/main/Transformer.md)
+
 **Quick comparison:**
 
 | Architecture | Best suited for | Processes input |
