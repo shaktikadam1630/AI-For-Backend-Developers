@@ -454,7 +454,167 @@ console.log(response.content[0].text);
 // no decision-making beyond generating this one piece of text.
 ```
 
-**Where you see this in practice:** asking ChatGPT a single question, generating an image from a text prompt, summarizing a document, writing a function. Reactive by nature — you ask, it answers, the
+**Where you see this in practice:** asking ChatGPT a single question, generating an image from a text prompt, summarizing a document, writing a function. Reactive by nature — you ask, it answers, the interaction ends.
+
+---
+
+## 2. AI Agent
+
+**Definition:** An AI Agent is a component, powered by an LLM, that can perceive its environment, make decisions, and take actions to achieve a specific goal — by using tools, memory, and reasoning, not just generating text.
+
+```mermaid
+flowchart TD
+    A[User Request] --> B[LLM]
+    B --> C{Needs a tool?}
+    C -->|Yes| D[Call Tool<br/>e.g. check database]
+    D --> E[Tool Result]
+    E --> B
+    C -->|No| F[Direct Response]
+    B --> F
+```
+
+The critical addition here, compared to plain Generative AI, is **function calling / tool use**: the model can decide which of your backend functions to call, and with what arguments — your code then actually executes that function and feeds the result back.
+
+**Example — a single AI Agent with one tool:**
+
+```javascript
+const tools = [{
+  name: "getOrderStatus",
+  description: "Get the current status of an order by its ID",
+  input_schema: {
+    type: "object",
+    properties: { orderId: { type: "string" } },
+    required: ["orderId"],
+  },
+}];
+
+const response = await anthropic.messages.create({
+  model: "claude-sonnet-4-5",
+  max_tokens: 300,
+  tools,
+  messages: [{ role: "user", content: "What's the status of order 12345?" }],
+});
+
+const toolUse = response.content.find(block => block.type === "tool_use");
+if (toolUse?.name === "getOrderStatus") {
+  const [order] = await db.query("SELECT status FROM orders WHERE id = ?", [toolUse.input.orderId]);
+  // Send this result back to the model for a final natural-language reply
+}
+```
+
+**What makes this an "agent" and not just Generative AI:** it perceives (reads the user's question), decides (chooses to call `getOrderStatus` rather than answer directly), and acts (your code executes the tool call against a real database) — a full perceive-decide-act loop, even if it's just one simple loop.
+
+**Where you see this in practice:** a support chatbot that can actually look up your order, a coding assistant that can read your files, a scheduling bot that can check a real calendar.
+
+---
+
+## 3. Agentic AI
+
+**Definition:** Agentic AI is a system containing one or more (often advanced) AI agents, capable of complex multi-step reasoning, planning, and autonomous action toward a goal — without needing detailed step-by-step instructions.
+
+```mermaid
+flowchart TD
+    A["Goal: 'Onboard the new intern joining Monday'"] --> B[Reasoning: create multi-step plan]
+    B --> C[Step 1: Schedule welcome meeting - Outlook]
+    B --> D[Step 2: Create profile - HRMS]
+    B --> E[Step 3: Raise IT ticket - Wi-Fi, email, Slack]
+    B --> F[Step 4: Order laptop and ID card]
+    C --> G[Review outcomes]
+    D --> G
+    E --> G
+    F --> G
+    G --> H[Final confirmation / next action]
+```
+
+The defining shift from a single AI Agent: instead of one tool call in response to one question, the system is given only a **goal**, and it independently breaks that goal into an ordered sequence of steps, executes each one using different tools, and continues without asking for instructions at every stage.
+
+**Characteristics that define a system as truly agentic:**
+- **Goal-oriented planning** — given a goal, not a script.
+- **Multi-step reasoning** — breaks the goal into an ordered plan.
+- **Autonomous decision-making** — executes steps itself, rather than only suggesting them.
+- **Access to multiple tools, knowledge, and memory** — often several different systems (calendar, HR database, ticketing system) in one workflow.
+
+**Example — a simplified agentic workflow:**
+
+```javascript
+async function onboardIntern(internName, startDate) {
+  const response = await anthropic.messages.create({
+    model: "claude-sonnet-4-5",
+    max_tokens: 500,
+    tools: [scheduleTool, hrmsTool, itTicketTool, orderEquipmentTool],
+    messages: [{ role: "user", content: `Onboard ${internName}, starting ${startDate}.` }],
+  });
+
+  // The model reasons through the goal, requesting tool calls in sequence:
+  // scheduleTool -> hrmsTool -> itTicketTool -> orderEquipmentTool
+  // Your code executes each one and feeds results back, looping until the model
+  // signals the overall task is complete — no human confirms each intermediate step
+}
+```
+
+**Where you see this in practice:** an assistant that plans and books an entire trip end to end, a coding agent that reads a codebase, writes a fix, runs tests, and opens a pull request, a research agent that browses multiple sources, cross-checks facts, and produces a synthesized report.
+
+---
+
+## Comparing All Three, Directly
+
+| Aspect | Generative AI | AI Agent | Agentic AI |
+|---|---|---|---|
+| **Core job** | Create new content | Perceive, decide, act on one task | Plan and execute multi-step goals |
+| **Input given** | A specific prompt | A specific request | A high-level goal |
+| **Output** | Text, image, audio, etc. | An action + a response | A completed multi-step outcome |
+| **Tool usage** | None | One or a few, per request | Many, chained across steps |
+| **Autonomy** | None — waits for each prompt | Limited — one decision per request | High — plans and acts without step-by-step instruction |
+| **Memory** | None by default | Often session-level | Often persistent across the whole task |
+| **Example** | "Write a poem" | "What's my order status?" | "Onboard the new intern" |
+
+```mermaid
+flowchart LR
+    subgraph GenAI [Generative AI]
+        A1[Prompt] --> A2[Response]
+    end
+    subgraph Agent [AI Agent]
+        B1[Request] --> B2[LLM]
+        B2 --> B3[Tool Call]
+        B3 --> B4[Response]
+    end
+    subgraph Agentic [Agentic AI]
+        C1[Goal] --> C2[Plan]
+        C2 --> C3[Tool Call 1]
+        C2 --> C4[Tool Call 2]
+        C2 --> C5[Tool Call 3]
+        C3 --> C6[Outcome]
+        C4 --> C6
+        C5 --> C6
+    end
+```
+
+---
+
+## The Relationship Between the Three, Stated Precisely
+
+- **Generative AI is a capability**, not a system on its own — it's the "content creation" part.
+- **An AI Agent uses Generative AI as one of its components** — the LLM inside an agent is what drafts the message, summarizes the result, or decides which tool to call — but the agent itself is the full perceive-decide-act structure wrapped around that capability.
+- **Agentic AI is built from one or more AI Agents** — it's the orchestration layer that lets multiple decisions and tool calls chain together toward a bigger goal, rather than stopping after a single action.
+
+**The simplest way to hold all three at once:** ChatGPT answering one question is Generative AI. ChatGPT checking your calendar and replying with your next meeting is an AI Agent. ChatGPT performing multi-step deep research — browsing several sources, cross-referencing them, and producing a final synthesized report entirely on its own — is Agentic AI.
+
+---
+
+## Rule of Thumb for Deciding What to Build
+
+```mermaid
+flowchart TD
+    A[What does the feature need to do?] --> B{Just generate content?}
+    B -->|Yes| C[Generative AI is enough]
+    B -->|No| D{One action per user request?}
+    D -->|Yes| E[Build an AI Agent]
+    D -->|No| F{Multi-step goal, minimal instructions?}
+    F -->|Yes| G[Build an Agentic AI system]
+```
+
+Starting simpler is almost always the right call — build the Generative AI version first, add a single tool to make it an Agent only once a real action is genuinely needed, and only reach for a full Agentic system when the task truly requires autonomous, multi-step planning. Each step up this ladder adds real complexity (more failure modes, more to test, more to secure) — so only take the step your actual use case requires.
+
 
 ## 7. Full Picture — Where Everything Sits
 
