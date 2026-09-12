@@ -409,105 +409,53 @@ console.log(response.content[0].text);
 
 ---
 
-## 6. Workflows, AI Agents, and Agentic AI
+## 6. # Generative AI vs. AI Agents vs. Agentic AI
 
-Three levels of complexity, in order:
-
-### 6.1 Level 1 — A Simple RAG Chatbot (Workflow)
-
-Answers policy questions by looking up private documents using **Retrieval-Augmented Generation (RAG)**. Reactive only — no actions taken.
-
-### 6.2 Level 2 — A Tool-Augmented Chatbot (Still a Workflow)
+These three terms get used interchangeably in job postings, product marketing, and tutorials — but they describe three genuinely different things, sitting at increasing levels of complexity and autonomy. Getting this distinction right matters because it directly affects how you architect a system: a chatbot that answers questions needs a completely different design than a system that autonomously completes multi-step tasks.
 
 ```mermaid
 flowchart LR
-    A[User Query] --> B[LLM]
-    B --> C[Tool: HR System API]
-    C --> D[Action Performed<br/>e.g. leave applied]
+    A[Generative AI] --> B[AI Agent]
+    B --> C[Agentic AI]
 ```
 
-Connected to real APIs — can check/apply leave. Still one simple task per request, no broader autonomy.
-
-### 6.3 Level 3 — A True Agentic System
-
-```mermaid
-flowchart TD
-    A[Goal: Onboard new intern] --> B[Reasoning Model creates a plan]
-    B --> C[Schedule welcome meeting - Outlook]
-    B --> D[Create profile - HRMS]
-    B --> E[Raise IT ticket - Wi-Fi, email, Slack access]
-    B --> F[Order laptop and ID card]
-```
-
-Given only a goal ("onboard the new intern"), the system plans and executes multi-step actions itself, with no step-by-step instructions.
-
-**Characteristics:** goal-oriented planning · multi-step reasoning · autonomous decision-making · access to tools, knowledge, and memory.
-
-```javascript
-// Level 1 — Simple RAG chatbot: reactive, no actions
-const ragAnswer = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 200,
-  system: `Answer using only this policy doc:\n${policyDocText}`,
-  messages: [{ role: "user", content: "How many sick leave days do I get?" }],
-});
-
-// Level 2 — Tool-augmented chatbot: one action, still simple
-const tools = [{
-  name: "applyLeave",
-  description: "Apply for leave on behalf of the logged-in employee",
-  input_schema: { type: "object", properties: { days: { type: "number" } }, required: ["days"] },
-}];
-const toolResponse = await anthropic.messages.create({
-  model: "claude-sonnet-4-5",
-  max_tokens: 200,
-  tools,
-  messages: [{ role: "user", content: "Apply for 2 days of leave for me." }],
-});
-// Your code executes toolResponse's tool_use block against the real HR API
-
-// Level 3 — Agentic system: goal given, multi-step plan executed autonomously
-async function onboardIntern(internName, startDate) {
-  const plan = await anthropic.messages.create({
-    model: "claude-sonnet-4-5",
-    max_tokens: 500,
-    tools: [scheduleTool, hrmsTool, itTicketTool, orderEquipmentTool],
-    messages: [{ role: "user", content: `Onboard ${internName}, starting ${startDate}.` }],
-  });
-  // The model reasons through the goal, calling multiple tools in sequence:
-  // scheduleTool -> hrmsTool -> itTicketTool -> orderEquipmentTool
-  // Your code executes each requested tool call and feeds results back until done
-}
-```
-
-### 6.4 Defining the Three Related Terms Precisely
-
-| Term | Definition |
-|---|---|
-| **AI Agent** | A component that perceives its environment, decides, and acts to reach a goal — powered by an LLM. |
-| **Agentic AI** | A system with one or more agents, capable of complex multi-step reasoning and autonomous action. |
-| **Generative AI** | The content-generation capability, often used *inside* an agent — not the same as the agent itself. |
-
-**Autonomy**, precisely: the freedom to take an action on its own — like sending an email or creating a ticket — without confirmation at every step.
-
-### 6.5 Generative AI vs. Agentic AI
-
-| Aspect | Generative AI | Agentic AI |
-|---|---|---|
-| Purpose | Create new content | Reason, plan, act toward a goal |
-| Output | Unstructured content | Actions performed in the real system |
-| Autonomy | Very little — waits for each prompt | High — plans and acts with minimal instruction |
-| Planning | Minimal | Multi-step, detailed |
-| Tool usage | Minimal | Heavy |
-| Behavior | Reactive | Proactive |
-
-**Rule of thumb:** ChatGPT answering one question = Generative AI. ChatGPT performing multi-step deep research, browsing and synthesizing autonomously = Agentic AI.
-
-### 6.6 Common Tooling
-
-Code-based: Agno, Google's Agent Development Kit, OpenAI's agent toolkit. No-code/low-code: n8n, Zapier.
+Read left to right: Generative AI is a *capability*. An AI Agent is a *component* that uses that capability plus tools and memory to act. Agentic AI is a *system* built from one or more of those agents, capable of complex multi-step autonomy.
 
 ---
+
+## 1. Generative AI
+
+**Definition:** Generative AI is the capability of a model to create new content — text, images, audio, video, or code — rather than analyzing, classifying, or retrieving existing information.
+
+```mermaid
+flowchart LR
+    A[User Prompt] --> B[LLM]
+    B --> C[Newly Generated Content]
+```
+
+**What it does NOT do on its own:**
+- It doesn't take actions in the outside world.
+- It doesn't remember previous conversations unless you explicitly build that memory yourself.
+- It doesn't decide what to do next — it responds to exactly what it's asked, once, and stops.
+
+**Example — pure Generative AI, nothing more:**
+
+```javascript
+import Anthropic from "@anthropic-ai/sdk";
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+const response = await anthropic.messages.create({
+  model: "claude-sonnet-4-5",
+  max_tokens: 200,
+  messages: [{ role: "user", content: "Write a short poem about monsoon season." }],
+});
+
+console.log(response.content[0].text);
+// A single, self-contained response. No tools used, no memory kept,
+// no decision-making beyond generating this one piece of text.
+```
+
+**Where you see this in practice:** asking ChatGPT a single question, generating an image from a text prompt, summarizing a document, writing a function. Reactive by nature — you ask, it answers, the
 
 ## 7. Full Picture — Where Everything Sits
 
