@@ -390,7 +390,7 @@ flowchart LR
     A[Small Language Model] --> B["Trained on narrow data<br/>e.g. movie articles"]
     C[Large Language Model] --> D["Trained on massive data<br/>Wikipedia + books + news + more"]
 ```
-
+ > 📖 **For more information:** see [LLM-Fundamentals.md](https://github.com/shaktikadam1630/AI-For-Backend-Developers/blob/main/LLM-Fundamentals.md)
 ### 5.2 RLHF — Reinforcement Learning with Human Feedback
 
 If Buddy picked up toxic language, his owner would need to actively correct him — showing multiple possible responses and marking which are acceptable. This is exactly how LLMs like ChatGPT are made safer: human reviewers rank multiple model responses, and the model is further trained on that feedback.
