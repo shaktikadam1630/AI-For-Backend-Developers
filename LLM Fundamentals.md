@@ -139,4 +139,3 @@ This is covered in far more depth in later notes on prompt engineering and struc
 | Closed model | API-based, no infrastructure to manage (Claude, GPT, Gemini) |
 | Open-weight model | Self-hosted, full control (Llama, Mistral) |
 
-**Next:** Prompt Engineering and Structured Output — how to reliably get the exact shape of response your application needs.
